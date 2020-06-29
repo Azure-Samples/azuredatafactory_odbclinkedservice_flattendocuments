@@ -4,7 +4,7 @@ languages:
 - sql
 products:
 - azure data factory
-description: "Shows how to use the ADF ODBC linked service to take objects from a document database and  "flatten" them for use in a relational data store."
+description: "Shows how to use the ADF ODBC linked service to take objects from a document database and  flatten them for use in a relational data store."
 urlFragment: "azuredatafactory_odbclinkedservice_flattendocuments"
 ---
 
