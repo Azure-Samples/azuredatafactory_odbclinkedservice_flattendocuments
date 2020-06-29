@@ -1,11 +1,11 @@
 ---
 page_type: sample
 languages:
-- csharp
+- SQL
 products:
-- dotnet
-description: "Add 150 character max description"
-urlFragment: "update-this-to-unique-url-stub"
+- Azure Data Factory
+description: "Code sample shows how to use the Azure Data Factory ODBC linked service to take objects from a document database (i.e., MongoDB) and "flatten" them for use in a relational data store."
+urlFragment: "azuredatafactory_odbclinkedservice_flattendocuments"
 ---
 
 # Official Microsoft Sample
