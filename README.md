@@ -5,7 +5,7 @@ languages:
 products:
 - Azure Data Factory
 description: "Code sample shows how to use the Azure Data Factory ODBC linked service to take objects from a document database (i.e., MongoDB) and "flatten" them for use in a relational data store."
-urlFragment: "azuredatafactory_odbclinkedservice_flattendocuments"
+urlFragment: azuredatafactory_odbclinkedservice_flattendocuments
 ---
 
 # Official Microsoft Sample
