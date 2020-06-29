@@ -1,7 +1,7 @@
 ---
 page_type: sample
 languages:
-- csharp
+- sql
 products:
 - dotnet
 description: "Add 150 character max description"
