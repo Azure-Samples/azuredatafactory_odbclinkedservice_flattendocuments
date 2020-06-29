@@ -3,7 +3,7 @@ page_type: sample
 languages:
 - sql
 products:
-- dotnet
+- azure data factory
 description: "Add 150 character max description"
 urlFragment: "update-this-to-unique-url-stub"
 ---
