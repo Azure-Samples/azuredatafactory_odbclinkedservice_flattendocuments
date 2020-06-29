@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "value": "jeschult-adf-shiproom"
+        },
+        "ODBC_MongoDB_connectionString": {
+            "value": ""
+        },
+        "ODBC_MongoDB_credential": {
+            "value": ""
+        },
+        "SynapseSQLPool_sqldwfortesting_connectionString": {
+            "value": ""
+        }
+    }
+}

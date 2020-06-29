@@ -1,0 +1,179 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "type": "string",
+            "metadata": "Data Factory name",
+            "defaultValue": "jeschult-adf-shiproom"
+        },
+        "SynapseSQLPool_sqldwfortesting_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'SynapseSQLPool_sqldwfortesting'"
+        },
+        "ODBC_MongoDB_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'ODBC_MongoDB'"
+        },
+        "ODBC_MongoDB_credential": {
+            "type": "secureString",
+            "metadata": "Secure string for 'credential' of 'ODBC_MongoDB'"
+        }
+    },
+    "variables": {
+        "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('factoryName'), '/jeschult-shiproom')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "SelfHosted",
+                "description": "For shiproom",
+                "typeProperties": {}
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/SynapseSQLPool_sqldwfortesting')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDW",
+                "typeProperties": {
+                    "connectionString": "[parameters('SynapseSQLPool_sqldwfortesting_connectionString')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/ODBC_MongoDB')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "description": "On-premises MongoDB.",
+                "annotations": [],
+                "type": "Odbc",
+                "typeProperties": {
+                    "connectionString": {
+                        "type": "SecureString",
+                        "value": "[parameters('ODBC_MongoDB_connectionString')]"
+                    },
+                    "authenticationType": "Anonymous",
+                    "credential": {
+                        "type": "SecureString",
+                        "value": "[parameters('ODBC_MongoDB_credential')]"
+                    }
+                },
+                "connectVia": {
+                    "referenceName": "jeschult-shiproom",
+                    "type": "IntegrationRuntimeReference"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/integrationRuntimes/jeschult-shiproom')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/SQLPool_sqldwfortesting')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "SynapseSQLPool_sqldwfortesting",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "AzureSqlDWTable",
+                "schema": [
+                    {
+                        "name": "DocData",
+                        "type": "varchar"
+                    }
+                ],
+                "typeProperties": {
+                    "schema": "dbo",
+                    "table": "CustomersFromMongoDB"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/SynapseSQLPool_sqldwfortesting')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/ODBC_from_MongoDB')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "ODBC_MongoDB",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "OdbcTable",
+                "schema": [],
+                "typeProperties": {
+                    "tableName": "`Brian`"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/ODBC_MongoDB')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/MongoDB_to_SQLpool')]",
+            "type": "Microsoft.DataFactory/factories/pipelines",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "description": "Moving data from MongoDB to SQL pool. ",
+                "activities": [
+                    {
+                        "name": "MongoDB_to_SQLpool",
+                        "type": "Copy",
+                        "dependsOn": [],
+                        "policy": {
+                            "timeout": "7.00:00:00",
+                            "retry": 0,
+                            "retryIntervalInSeconds": 30,
+                            "secureOutput": false,
+                            "secureInput": false
+                        },
+                        "userProperties": [],
+                        "typeProperties": {
+                            "source": {
+                                "type": "OdbcSource",
+                                "queryTimeout": "02:00:00"
+                            },
+                            "sink": {
+                                "type": "SqlDWSink",
+                                "tableOption": "autoCreate"
+                            },
+                            "enableStaging": false
+                        },
+                        "inputs": [
+                            {
+                                "referenceName": "ODBC_from_MongoDB",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "referenceName": "SQLPool_sqldwfortesting",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ]
+                    }
+                ],
+                "annotations": []
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/datasets/ODBC_from_MongoDB')]",
+                "[concat(variables('factoryId'), '/datasets/SQLPool_sqldwfortesting')]"
+            ]
+        }
+    ]
+}
