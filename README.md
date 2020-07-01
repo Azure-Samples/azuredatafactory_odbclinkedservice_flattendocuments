@@ -19,9 +19,9 @@ Guidance on onboarding samples to docs.microsoft.com/samples: https://review.doc
 Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
 -->
 
-In Azure Data Factory (ADF), there is a native MongoDB connector. However, [Microsoft documentation states](https://docs.microsoft.com/en-us/azure/data-factory/connector-mongodb) that the connector only supports up to MongoDB 3.4. To enable connectivity to a later version, the [ODBC connector](https://docs.microsoft.com/en-us/azure/data-factory/connector-odbc) must be used. 
+## Using the Azure Data Factory ODBC Connector to Flatten Documents for Relational Data Stores
 
-One of the benefits of using this approach is that the document data, which can be deeply nested, appears in a flattened table structure. This more easily allows it to be used with a relational data sink. This can be extended to any ODBC data source, not just MongoDB. 
+Moving document data into a relational data store can pose challenges. When document data is nested, there is no easy way to relate the nested objects to specific tables or columns in the relational database. The Azure Data Factory (ADF) ODBC linked service can "flatten" the nested document, showing it as "tables", which makes it much easier to map those objects to tables in a relational database like Azure Synapse Analytics SQL Pool. 
 
 ## Contents
 
